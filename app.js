@@ -2,11 +2,12 @@ const mysql = require('mysql');
 var express = require('express');
 var app = express();
 var cors = require('cors');
-const bodyParser = require('body-parser');
+//const bodyParser = require('body-parser');
 
 app.use(cors());
 
-app.use(bodyParser.urlencoded({extended: true}));
+//app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.json());
 
 const con = mysql.createConnection({
   host: 'localhost',
@@ -33,6 +34,14 @@ app.post('/example', function(req,res){
   {
     if(err) throw err;
   });
+});
+
+app.post('/add', function(req,res){
+  con.query("INSERT INTO planets(name,color,num_of_moons,mass,rings) VALUES(\"" + req.body.name + "\",\"" + req.body.color + "\",\"" + req.body.num_of_moons + "\",\"" + req.body.mass + "\",\"" + req.body.rings + "\")", function(err,result)
+  {
+    if(err) throw err;
+  });
+  res.status(200).json({message: "insert done"});// json(req.body);
 });
 
 app.get('/favicon.ico', (req, res) => res.status(204));
