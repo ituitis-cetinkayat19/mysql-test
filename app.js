@@ -2,8 +2,11 @@ const mysql = require('mysql');
 var express = require('express');
 var app = express();
 var cors = require('cors');
+const bodyParser = require('body-parser');
 
 app.use(cors());
+
+app.use(bodyParser.urlencoded({extended: true}));
 
 const con = mysql.createConnection({
   host: 'localhost',
@@ -18,6 +21,18 @@ con.connect((err) => {
     return;
   }
   console.log('Connection established');
+});
+
+app.post('/example', function(req,res){
+  var newname = '"' + req.body.name + '"';
+  var newcolor =  '"' + req.body.color + '"';
+  var newmoons =  '"' + req.body.num_of_moons + '"';
+  var newmass =  '"' + req.body.mass + '"';
+  var newring =   '"' + req.body.rings + '"';
+  con.query("INSERT INTO planets(name,color,num_of_moons,mass,rings) VALUES(" + newname + "," + newcolor + "," + newmoons + "," + newmass + "," + newring + ")", function(err,result)
+  {
+    if(err) throw err;
+  });
 });
 
 app.get('/favicon.ico', (req, res) => res.status(204));
