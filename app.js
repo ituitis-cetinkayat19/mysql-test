@@ -24,24 +24,25 @@ con.connect((err) => {
   console.log('Connection established');
 });
 
-app.post('/example', function(req,res){
-  var newname = '"' + req.body.name + '"';
-  var newcolor =  '"' + req.body.color + '"';
-  var newmoons =  '"' + req.body.num_of_moons + '"';
-  var newmass =  '"' + req.body.mass + '"';
-  var newring =   '"' + req.body.rings + '"';
-  con.query("INSERT INTO planets(name,color,num_of_moons,mass,rings) VALUES(" + newname + "," + newcolor + "," + newmoons + "," + newmass + "," + newring + ")", function(err,result)
+app.delete('/delete', function(req,res){
+  con.query("DELETE FROM planets WHERE id =" + req.body.number, function(err,result)
   {
     if(err) throw err;
   });
+  res.status(200).json({message: "Data successfully deleted"});
 });
 
 app.post('/add', function(req,res){
-  con.query("INSERT INTO planets(name,color,num_of_moons,mass,rings) VALUES(\"" + req.body.name + "\",\"" + req.body.color + "\",\"" + req.body.num_of_moons + "\",\"" + req.body.mass + "\",\"" + req.body.rings + "\")", function(err,result)
+  var r;
+  if(req.body.rings == "on")
+    r = 1;
+  else
+   r = 0;
+  con.query("INSERT INTO planets(name,color,num_of_moons,mass,rings) VALUES(\"" + req.body.name + "\",\"" + req.body.color + "\",\"" + req.body.num_of_moons + "\",\"" + req.body.mass + "\",\"" + r + "\")", function(err,result)
   {
     if(err) throw err;
   });
-  res.status(200).json({message: "insert done"});// json(req.body);
+  res.status(200).json({message: "insert done"});
 });
 
 app.get('/favicon.ico', (req, res) => res.status(204));
@@ -63,7 +64,7 @@ app.get('/color', function(req, res){
 });
 
 app.get('/all', function(req, res){
-  con.query("SELECT * FROM planets", function(err,result)
+  con.query("SELECT * FROM planets ORDER BY id", function(err,result)
   {
     if(err) throw err;
     res.json(result);
