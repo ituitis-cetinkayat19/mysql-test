@@ -32,6 +32,19 @@ app.delete('/delete', function(req,res){
   res.status(200).json({message: "Data successfully deleted"});
 });
 
+app.put('/update', function(req,res){
+  var r;
+  if(req.body.rings == "on")
+    r = 1;
+  else
+    r = 0;
+  con.query("UPDATE planets SET name = \"" + req.body.name + "\", color = \"" + req.body.color + "\", num_of_moons = " + req.body.num_of_moons + ", mass = " + req.body.mass + ", rings = " + r + " WHERE id =" + req.body.id, function(err,result)
+  {
+    if(err) throw err;
+  });
+  res.status(200).json({message: "Data successfully updated"});
+});
+
 app.post('/add', function(req,res){
   var r;
   if(req.body.rings == "on")
