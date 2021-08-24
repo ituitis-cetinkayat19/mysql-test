@@ -2,6 +2,7 @@ const mysql = require('mysql');
 var express = require('express');
 var app = express();
 var cors = require('cors');
+const PORT = process.env.PORT || 2000;
 //const bodyParser = require('body-parser');
 
 app.use(cors());
@@ -10,10 +11,10 @@ app.use(cors());
 app.use(express.json());
 
 const con = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'deneme'
+  host: process.env.DBHOST || 'localhost',
+  user: process.env.DBUSER || 'root',
+  password: process.env.DBPASS || '',
+  database: process.env.DBUSER || 'deneme'
 });
 
 con.connect((err) => {
@@ -93,7 +94,7 @@ app.get('/:id([0-9])', function(req,res){
 });
 
 app.get('*', function(req, res){
-   res.send('Sorry, this is an invalid URL.');
+   res.send('Sorry, this is an invalid URL. Serving from port ' + PORT);
 });
 
-app.listen(2000);
+app.listen(PORT);
